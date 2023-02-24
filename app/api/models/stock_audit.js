@@ -2,17 +2,35 @@ const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class StockAudit extends Model {
-    static associate(models) {
-      // define association here
-    }
+    static associate(models) {}
 
 
-    static async saleAudit(data) {
+    static async addSaleAudit(data) {
       this.create({
         staff_id: data.staff_id,
         ingredient_id: data.ingredient_id,
         location_id: data.location_id,
         action: 'sale',
+        unit_change: data.unit_change * -1
+      })
+    }
+
+    static async addDeliveryAudit(data) {
+      this.create({
+        staff_id: data.staff_id,
+        ingredient_id: data.ingredient_id,
+        location_id: data.location_id,
+        action: 'delivery',
+        unit_change: data.unit_change
+      })
+    }
+
+    static async addWasteAudit(data) {
+      this.create({
+        staff_id: data.staff_id,
+        ingredient_id: data.ingredient_id,
+        location_id: data.location_id,
+        action: 'waste',
         unit_change: data.unit_change * -1
       })
     }

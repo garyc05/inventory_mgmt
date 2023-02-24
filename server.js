@@ -8,14 +8,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
-app.get('/test', async (req, res, next) => {
-  await client.connect()
-  const result = client.query("select current_date")
-  
-  res.setHeader("Content-Type", "application/json")
-  res.status(200)
-  res.send(JSON.stringify(result))
-})
+// Mount the API Routes
+require('./app/api/routes')(app)
 
 
 app.listen(PORT, () => {
