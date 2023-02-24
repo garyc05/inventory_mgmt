@@ -26,42 +26,59 @@ const doc = new GoogleSpreadsheet(sheetId)
 doc.useApiKey(process.env.GOOGLE_API_KEY)
 
 
-
 const dataImport = async () => {
 
-  // TODO, check if data is already imported HERE FIRST
+  const isDataLoaded = await isLoaded()
 
-  await doc.loadInfo()
+  if(!isDataLoaded){
 
-  console.log('Location Data Import...')
-  await loadLocations()
+    await doc.loadInfo()
 
-  console.log('Staff And Role Data Import...')
-  await loadStaff()
+    console.log('Location Data Import...')
+    await loadLocations()
+  
+    console.log('Staff And Role Data Import...')
+    await loadStaff()
+  
+  
+    console.log('Ingredient Data Import...')
+    await loadIngredients()
+  
+    console.log('Recipe Data Import...')
+    await loadRecipes()
+  
+  
+    console.log('Menu Modifiers Data Import...')
+    await loadModifiers()
+  
+  
+    console.log('Menu Items Data Import...')
+    await loadMenuItems()
+  
+    console.log('Setting Stock per Locations...')
+    await setLocationStock()
+
+    return 'Data Import Complete'
+  }
 
 
-  console.log('Ingredient Data Import...')
-  await loadIngredients()
-
-  console.log('Recipe Data Import...')
-  await loadRecipes()
-
-
-  console.log('Menu Modifiers Data Import...')
-  await loadModifiers()
-
-
-  console.log('Menu Items Data Import...')
-  await loadMenuItems()
-
-
-  await setLocationStock()
+  return 'Data Already Imported'
 }
+
 
 const sheetRowsByTitle = (title) => {
   const sheet = doc.sheetsByTitle[title]
   return sheet.getRows({ offset: 0 })
 }
+
+
+
+// Crude way to just check if the import has been run already
+const isLoaded = async () => {
+  const [result,_] = await sequelize.query('select * from locations limit 3')
+  return result.length > 0
+}
+
 
 
 const loadLocations = async () => {
@@ -117,6 +134,7 @@ const loadIngredients = async () => {
 }
 
 
+
 const loadRecipes = async () => {
   const rows = await sheetRowsByTitle('recipes')
   for(let row of rows){
@@ -128,6 +146,7 @@ const loadRecipes = async () => {
     })
   }
 }
+
 
 
 const loadModifiers = async () => {
@@ -147,6 +166,7 @@ const loadModifiers = async () => {
 }
 
 
+
 const loadMenuItems = async () => {
   const rows = await sheetRowsByTitle('menus')
   for(let row of rows){
@@ -161,6 +181,7 @@ const loadMenuItems = async () => {
     })
   }
 }
+
 
 
 const setLocationStock = async () => {
@@ -189,8 +210,8 @@ const setLocationStock = async () => {
 
 
 
-dataImport().then(() => {
-  console.log('Done')
+dataImport().then((msg) => {
+  console.log(msg)
 }).catch((err) => {
   console.log(err)
 })

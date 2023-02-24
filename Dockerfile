@@ -6,9 +6,15 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
+EXPOSE 4001
+
+COPY ./entrypoint.sh .
+
 # Bundle source code
 COPY . .
 
-EXPOSE 4001
+# Set the node_env to ensure the right db config is used for the container
+ENV NODE_ENV production
 
-CMD [ "npm", "run", "start" ]
+
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
