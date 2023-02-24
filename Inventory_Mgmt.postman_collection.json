@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "423162f4-1449-46c8-b787-8dd8947869f8",
+		"name": "Inventory_Mgmt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15217122"
+	},
+	"item": [
+		{
+			"name": "Delivery",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"staff_id\": 239,\n    \"data\": [{\n        \"ingredient_id\": 403,\n        \"units\": 30\n    }, {\n        \"ingredient_id\": 409,\n        \"units\": 30\n    }, {\n        \"ingredient_id\": 92,\n        \"units\": 30\n    }, {\n        \"ingredient_id\": 440,\n        \"units\": 30\n    }, {\n        \"ingredient_id\": 19,\n        \"units\": 30\n    }, {\n        \"ingredient_id\": 205,\n        \"units\": 30\n    }]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4001/delivery",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"delivery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sell",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"staff_id\": 207,\n    \"data\": {\n        \"recipe_id\": 1,\n        \"modified_ingredient\": \"turmeric\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4001/sell",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"sell"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory Audit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4001/reports/inventory/audit?staff_id=308&start_date=2023-02-22&end_date=2023-02-26",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"reports",
+						"inventory",
+						"audit"
+					],
+					"query": [
+						{
+							"key": "staff_id",
+							"value": "308"
+						},
+						{
+							"key": "start_date",
+							"value": "2023-02-22"
+						},
+						{
+							"key": "end_date",
+							"value": "2023-02-26"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Financial Report",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4001/reports/financials?staff_id=308&start_date=2023-02-22&end_date=2023-02-26",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"reports",
+						"financials"
+					],
+					"query": [
+						{
+							"key": "staff_id",
+							"value": "308"
+						},
+						{
+							"key": "start_date",
+							"value": "2023-02-22"
+						},
+						{
+							"key": "end_date",
+							"value": "2023-02-26"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory Value",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4001/reports/inventory/value?staff_id=308",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"reports",
+						"inventory",
+						"value"
+					],
+					"query": [
+						{
+							"key": "staff_id",
+							"value": "308"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stock Check",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"staff_id\": 297,\n    \"data\": [{\n        \"ingredient_id\": 403,\n        \"units\": 15\n    }, {\n        \"ingredient_id\": 409,\n        \"units\": 15\n    }, {\n        \"ingredient_id\": 92,\n        \"units\": 15\n    }]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4001/stock/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"stock",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location Stock",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4001/stock/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"stock",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location Staff",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4001/staff",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4001",
+					"path": [
+						"staff"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
