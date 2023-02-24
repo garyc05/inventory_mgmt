@@ -33,6 +33,9 @@ const makeSale = async (req, res, next) => {
 
   // Handling just a single item in the sale request body currently
   const menuItem = await MenuItem.findOne({ where: { recipe_id: data.recipe_id, location_id: LOCATION_ID } })
+  if(!menuItem){
+    return res.status(422).send({ message: `Recipe ${data.recipe_id} is not sold @ Location ${LOCATION_ID}` })
+  }
 
 
   // Also handling only a single modified ingredient
