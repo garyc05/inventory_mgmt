@@ -14,6 +14,12 @@ const {
   IngredientStock
 } = require('./api/models')
 
+// Specific staff roles to allow for certain capabilities
+const ACCEPT_DELIVERY_ROLES = ['Chef', 'Back-of-house']
+const MAKE_SALES_ROLES = ['Front-of-house']
+const VIEW_REPORTS_ROLES = ['Manager']
+
+
 const sheetId = process.env.GOOGLE_SHEET_ID
 
 const doc = new GoogleSpreadsheet(sheetId)
@@ -80,7 +86,17 @@ const loadStaff = async () => {
     })
 
     if(created) {
-      const [role, _] = await Role.findOrCreate({ where: { name: row.role } })
+      const acceptDeliveries = ACCEPT_DELIVERY_ROLES.includes(row.role)
+      const makeSales = MAKE_SALES_ROLES.includes(row.role)
+      const viewReports = VIEW_REPORTS_ROLES.includes(row.role)
+      const [role, _] = await Role.findOrCreate({ 
+        where: { 
+          name: row.role, 
+          accept_deliveries: acceptDeliveries,
+          make_sales: makeSales,
+          view_reports: viewReports
+        }
+      })
       await staffMember.addRole(role)
     }
 

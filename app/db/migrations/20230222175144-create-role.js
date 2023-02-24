@@ -12,6 +12,21 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         unique: true
+      },
+      accept_deliveries: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      make_sales: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      view_reports: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     })
   },

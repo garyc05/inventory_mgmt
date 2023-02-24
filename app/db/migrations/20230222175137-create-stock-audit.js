@@ -27,7 +27,7 @@ module.exports = {
         values: ['sale', 'delivery', 'waste']
       },
       unit_change: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DECIMAL
       },
       cost: {
         type: Sequelize.DECIMAL,
