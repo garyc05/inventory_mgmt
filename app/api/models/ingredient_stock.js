@@ -14,9 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       for(let content of recipeContents){
         const stockItem = await this.findOne({ where: { location_id: locationId, ingredient_id: content.ingredient_id } })
         if(stockItem.unit_count < content.ingredient_quantity){
-          haveStock = false
+          // Not tracking which ingredients are out of stock, just that we don't have enough stock
+          haveStock = false 
+          break
         }
       }
+
       return haveStock
     }
 

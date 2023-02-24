@@ -27,6 +27,7 @@ module.exports = {
 
   production: {
     host: 'db',
+    logging: false,
     pool: {
       max: 10,
       min: 0,

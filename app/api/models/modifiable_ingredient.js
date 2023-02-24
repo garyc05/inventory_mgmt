@@ -1,9 +1,14 @@
-const { Model } = require('sequelize')
+const { Model, Op } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class ModifiableIngredient extends Model {
     static associate(models) {
       // define association here
+    }
+
+    static async findByName (name) {
+      const modifier = await this.findOne({ where: { name: { [Op.iLike]:  `%${name}%` } } })
+      return modifier
     }
   }
   ModifiableIngredient.init({

@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 4001
@@ -11,6 +12,16 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Mount the API Routes
 require('./app/api/routes')(app)
+
+
+// Simple catch-all middleware to ensure un-caught errors return a response rather than hang
+app.use((error, req, res, next) => {
+  if(error){
+    console.log(error)
+    return res.status(500).send('Internal Server Error')
+  }
+  next()
+})
 
 
 app.listen(PORT, () => {

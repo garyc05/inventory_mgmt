@@ -4,6 +4,7 @@ const { staffValidator } = require('./middleware')
 const LOCATION_ID = process.env.LOCATION_ID
 
 
+// Exports the router with attached middleware and endpoint handler(s)
 module.exports = () => {
   const router = require('express-promise-router')()
 

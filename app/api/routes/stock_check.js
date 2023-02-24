@@ -4,23 +4,29 @@ const { staffValidator } = require('./middleware')
 const LOCATION_ID = process.env.LOCATION_ID
 
 
+// Exports the router with attached middleware and endpoint handler(s)
 module.exports = () => {
   const router = require('express-promise-router')()
 
-  router.post('/', staffValidator, stockCheck)
+  router.post('/check', staffValidator, stockCheck)
+  router.get('/all', getStock)
   return router
 }
 
 
+
 const doStockUpdates = async (staffId, ingredientId, units) => {
   await sequelize.transaction(async (t) => {
-    await IngredientStock.reduceStock(LOCATION_ID, ingredientId, units)
-    await StockAudit.addWasteAudit({
-      staff_id: staffId,
-      ingredient_id: ingredientId,
-      location_id: LOCATION_ID,
-      unit_change: units
-    })
+    const currentStock = await IngredientStock.findOne({ where: { ingredient_id: ingredientId, location_id: LOCATION_ID } })
+    if(units < currentStock.unit_count){
+      await IngredientStock.reduceStock(LOCATION_ID, ingredientId, units)
+      await StockAudit.addWasteAudit({
+        staff_id: staffId,
+        ingredient_id: ingredientId,
+        location_id: LOCATION_ID,
+        unit_change: currentStock.unit_count - units
+      })
+    }
   })
 }
 
@@ -38,4 +44,10 @@ const stockCheck = async (req, res, next) => {
   }
 
   res.sendStatus(201)
+}
+
+
+const getStock = async (req, res, next) => {
+  const locationStock = await IngredientStock.findAll({ where: { location_id: LOCATION_ID } })
+  res.send({ ingredient_count: locationStock.length, ingredient_stocks: locationStock })
 }
