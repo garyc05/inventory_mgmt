@@ -1,0 +1,8 @@
+
+# Ignore the locally mounted db volume
+volume
+
+node_modules
+.DS_Store
+.vscode
+npm-debug.log
