@@ -10,32 +10,32 @@
 
 ### Tech decision justifications
 
-**NodeJS**
+**NodeJS**  
 To achieve as much functionality as possible I used NodeJS (JavaScript) as it is the language I'm currently using most regularly.
 For this relatively simple CRUD app, any modern server-side language could be used without issue.
 
 
-**ExpressJS
+**ExpressJS**  
 Anyone familiar with the Nod ecosystem will be familiar with Express. While there are multiple web app frameworks available with 
 various pros and cons, Express remains the most used and most mature framework.
 
 
-**Sequelize**
+**Sequelize**  
 I used what appears to be the most popular ORM for Node. I have some familiarity with this tool but not extensive.
 On reflection, it may have been faster to just write SQL and used a lower level package and embed the SQL directly as most of my time was spent wrestling the ORM. 
 I do find codebases which use ORM's to be easier to manage as they become larger but clearly that was not going ot be the case here. 
 
 
-**Postgres**
+**Postgres**  
 The data appeared inherently relational so a relational database was an obvious choice. 
 Coupled with the fact the app requires reporting functions and reporting functions are generally more suited to rrelations databases
 I'm most familiar with Postgres, but any relational database would suffice
 
 
-**Docker**
+**Docker**  
 The requirements called for portability, using docker and docker compose was the quickest and simplest way to provide for this.
 Using docker compose I could containerize the application and a postgres instance and run them in tandem. The only requirement on a client machine 
-being that docker must be installed. App developed on MacOS and not run on any other OS, 
+being that docker must be installed. App developed on OSX and not run on any other OS, theoretically at least the app should run on any OS with docker installed
 
 
 
@@ -62,23 +62,24 @@ it would take all the majority my time to put a usable interface in place
 
 ## Running the Application
 
-To run the application in an environment with access to a bash terminal run the below command and follow the prompts
+To run the application in an environment with access to a bash terminal run the below command and follow the prompts  
 ```./start```
 
-The first prompt asks for a Location ID, once chosen the API requests are limited to that data for that location only as per requirements
+The first prompt asks for a Location ID, once chosen the API requests are limited to that data for that location only as per requirements  
 ```Enter Location ID where app is to run: ```
 
-The second prompt asks if the Data Importer should be run. This should be run the first time the containers are spun up to seed the database with the external data
-Any subsequent runs of the app the data import can be skipped as the postgres volume is generated locally 
+The second prompt asks if the Data Importer should be run.  
+This should be run the first time the containers are spun up to seed the database with the external data.  
+Any subsequent runs of the app the data import can be skipped as the postgres volume is generated locally.  
 
 When Running the Data Import, there are two prompts for key values to allow access to the external Google sheet
-```Enter Google Sheet ID: ```
+```Enter Google Sheet ID: ```  
 ```Enter Google API Key: ```
 
 The values for these will provided separate to this repository
 
 
-To run the application in an environment without bash, run the following command directly replacing the relevant values
+To run the application in an environment without bash, run the following command directly replacing the relevant values.  
 ```LOCATION_ID=[VALUE] GOOGLE_SHEET_ID=[VALUE] GOOGLE_API_KEY=[VALUE] docker compose up --build```
 
 
@@ -89,7 +90,7 @@ The data used in the collection presumes the app has been run using **Location I
 
 An overview of the available endpoints
  
-**POST /delivery**
+**POST /delivery**  
 Updates the stock and inventory audit trail for the current location. 
 Only staff with the Chef or Back-of-house roles can make delivery requests. 
 The data property takes an arbitrary length array of ingredients and there quantities. 
@@ -105,7 +106,7 @@ Example Request Body:
 ```
 
 
-**POST /sell**
+**POST /sell**  
 Selling an item reduces the current location stock, updates the inventory audit trail and creates a sale item. 
 Only staff with the Front-of-house role can make sell requests. 
 It is not possible to sell an item that the current location does not sell. 
@@ -124,7 +125,7 @@ Example Request Body:  (modified_ingredient is optional)
 ```
 
 
-**POST /stock/check**
+**POST /stock/check**  
 Updates the stock levels for the current location
 No staff role requirements are applied to the stock/check route
 The units value passed in is assumed to be the current stock level after a manual count
@@ -144,24 +145,24 @@ Example Request Body:
 
 
 
-**GET /reports/inventory/audit?staff_id={}&start_date={}&end_Date={}**
+**GET /reports/inventory/audit?staff_id={}&start_date={}&end_Date={}**  
 Returns a list of all changes made to the stock levels of the current location during the selected date range.  
 Only staff with role Manager can make reports requests.  
 Takes the staff_id as a query param to enable a GET request. Would expect this value in the form of a session token or cookie etc in a fully implemented system.  
 Requires the start_date and end_date parameters. No attempts are made to parse and/or format these date strings, presumed to be in YYYY-MM-DD format  
 
 
-**GET /reports/financials?staff_id={}&start_date={}&end_Date={}**
+**GET /reports/financials?staff_id={}&start_date={}&end_Date={}**  
 Returns a summary of costs and sales revenue for select date range  
 
 
-**GET /reports/inventory/value?staff_id={}**
+**GET /reports/inventory/value?staff_id={}**  
 Returns the value of the currently held stock for current location  
 
 
-
+### DB Access
 A PgAdmin container, providing an SQL interface to the data, is added to the application also to assist with verifications.  
 The PgAdmin interface is available @ http://localhost:5050/ when the application is running  
 Login details are   
-Username: user@nory.com
-Password: admin
+Username: user@nory.com  
+Password: admin  
