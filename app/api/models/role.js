@@ -1,17 +1,17 @@
 const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-  class Recipe extends Model {
+  class Role extends Model {
     static associate(models) {
-      //this.hasMany(models.RecipeContent)
+      this.belongsToMany(models.Staff, { through: 'StaffRole' })
     }
   }
-  Recipe.init({
+  Role.init({
     name: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Recipe',
+    modelName: 'Role',
     underscored: true,
   })
-  return Recipe
+  return Role
 }

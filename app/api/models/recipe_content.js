@@ -2,9 +2,7 @@ const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class RecipeContent extends Model {
-    static associate(models) {
-      // define association here
-    }
+    static associate(models) {}
   }
   RecipeContent.init({
     recipe_id: DataTypes.INTEGER,
@@ -14,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'RecipeContent',
     underscored: true,
+    tableName: 'recipe_contents'
   })
   return RecipeContent
 }

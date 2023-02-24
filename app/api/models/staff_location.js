@@ -1,17 +1,17 @@
 const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-  class StaffRole extends Model {
+  class StaffLocation extends Model {
     static associate(models) {}
   }
-  StaffRole.init({
+  StaffLocation.init({
     staff_id: DataTypes.INTEGER,
-    role_id: DataTypes.INTEGER
+    location_id: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'StaffRole',
+    modelName: 'StaffLocation',
     underscored: true,
-    tableName: 'staff_roles'
+    tableName: 'staff_locations'
   })
-  return StaffRole
+  return StaffLocation
 }

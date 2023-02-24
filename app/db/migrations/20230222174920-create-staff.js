@@ -12,9 +12,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      location_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER
+      dob: {
+        type: Sequelize.DATEONLY
       },
       iban: {
         type: Sequelize.STRING
