@@ -1,14 +1,11 @@
-const { Client } = require("pg")
-const express = require("express")
+const express = require('express')
+const bodyParser = require('body-parser')
+const PORT = process.env.PORT || 4001
+
+
 const app = express()
-const port = 4001
-
-
-const client = new Client({
-  password: "password",
-  user: "user",
-  host: "postgres",
-})
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.get('/test', async (req, res, next) => {
@@ -21,6 +18,6 @@ app.get('/test', async (req, res, next) => {
 })
 
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`)
 })
