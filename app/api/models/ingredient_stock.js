@@ -25,12 +25,16 @@ module.exports = (sequelize, DataTypes) => {
 
     static async addStock (locationId, ingredientId, units) {
       const stockItem = await this.findOne({ where: { location_id: locationId, ingredient_id: ingredientId } })
-      await stockItem.increment('unit_count', { by: units })
+      if(stockItem){
+        await stockItem.increment('unit_count', { by: units })
+      }
     }
 
     static async reduceStock (locationId, ingredientId, units) {
       const stockItem = await this.findOne({ where: { location_id: locationId, ingredient_id: ingredientId } })
-      await stockItem.decrement('unit_count', { by: units })
+      if(stockItem){
+        await stockItem.decrement('unit_count', { by: units })
+      }
     }
 
 

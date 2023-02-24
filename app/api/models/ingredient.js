@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static async costFromId (ingredientId) {
       const ingredient = await this.findByPk(ingredientId)
-      return ingredient.cost
+      return ingredient?.cost ?? 0
     }
   }
   Ingredient.init({

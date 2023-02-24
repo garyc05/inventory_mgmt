@@ -1,5 +1,5 @@
 const { Op, fn, col } = require('sequelize')
-const { StockAudit, Sale } = require('../models')
+const { IngredientStock, StockAudit, Sale } = require('../models')
 const { staffValidator } = require('./middleware')
 
 const LOCATION_ID = process.env.LOCATION_ID

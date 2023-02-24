@@ -1,7 +1,7 @@
 const { Staff } = require('../models')
 
 // Middleware function to perform basic staff validations for every request
-// If the function does not return an response the valid staffMember object is passed to the next function via res.locals
+// If the function does not return a response itself then the valid staffMember object is passed to the next function via res.locals
 const staffValidator = async (req, res, next) => {
   try {
     const staffId = req.body?.staff_id || req.query?.staff_id

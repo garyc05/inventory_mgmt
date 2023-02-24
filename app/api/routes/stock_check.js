@@ -18,7 +18,7 @@ module.exports = () => {
 const doStockUpdates = async (staffId, ingredientId, units) => {
   await sequelize.transaction(async (t) => {
     const currentStock = await IngredientStock.findOne({ where: { ingredient_id: ingredientId, location_id: LOCATION_ID } })
-    if(units < currentStock.unit_count){
+    if(currentStock && (units < currentStock.unit_count)){
       await IngredientStock.reduceStock(LOCATION_ID, ingredientId, units)
       await StockAudit.addWasteAudit({
         staff_id: staffId,
