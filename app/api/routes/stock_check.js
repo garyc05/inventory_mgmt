@@ -7,15 +7,15 @@ const LOCATION_ID = process.env.LOCATION_ID
 module.exports = () => {
   const router = require('express-promise-router')()
 
-  router.post('/', staffValidator, newDelivery)
+  router.post('/', staffValidator, stockCheck)
   return router
 }
 
 
 const doStockUpdates = async (staffId, ingredientId, units) => {
   await sequelize.transaction(async (t) => {
-    await IngredientStock.addStock(LOCATION_ID, ingredientId, units)
-    await StockAudit.addDeliveryAudit({
+    await IngredientStock.reduceStock(LOCATION_ID, ingredientId, units)
+    await StockAudit.addWasteAudit({
       staff_id: staffId,
       ingredient_id: ingredientId,
       location_id: LOCATION_ID,
@@ -25,18 +25,10 @@ const doStockUpdates = async (staffId, ingredientId, units) => {
 }
 
 
-// Endpoint Handler Added to Route
-const newDelivery = async (req, res, next) => {
-
+const stockCheck = async (req, res, next) => {
   const { data } = req.body
   const { staffMember } = res.locals
 
-  const canAccept = await staffMember.canAcceptDelivery()
-  if(!canAccept){
-    return res.status(400).send({ message: `${staffMember.name} cannot accept deliveries` })
-  }
-
-  // Handle bulk or single items from request. Depending on a UI (if I get there) one may be better than the other for it's use case!!
   if(Array.isArray(data)){
     for(let item of data){
       await doStockUpdates(staffMember.id, item.ingredient_id, item.units)

@@ -19,7 +19,7 @@ module.exports = {
       },
       unit_count: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       created_at: {
