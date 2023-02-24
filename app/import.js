@@ -1,6 +1,18 @@
 require('dotenv').config()
 const { GoogleSpreadsheet } = require('google-spreadsheet')
-const { Location, Staff, Role, Ingredient, Recipe, RecipeContent } = require('./api/models')
+const { 
+  sequelize, 
+  Location, 
+  Staff, 
+  Role, 
+  Ingredient, 
+  Recipe, 
+  RecipeContent, 
+  ModifiableIngredient, 
+  Allergens, 
+  MenuItem,
+  IngredientStock
+} = require('./api/models')
 
 const sheetId = process.env.GOOGLE_SHEET_ID
 
@@ -11,7 +23,7 @@ doc.useApiKey(process.env.GOOGLE_API_KEY)
 
 const dataImport = async () => {
 
-  // TODO, check if data is already imported HERE
+  // TODO, check if data is already imported HERE FIRST
 
   await doc.loadInfo()
 
@@ -27,6 +39,17 @@ const dataImport = async () => {
 
   console.log('Recipe Data Import...')
   await loadRecipes()
+
+
+  console.log('Menu Modifiers Data Import...')
+  await loadModifiers()
+
+
+  console.log('Menu Items Data Import...')
+  await loadMenuItems()
+
+
+  await setLocationStock()
 }
 
 const sheetRowsByTitle = (title) => {
@@ -82,8 +105,70 @@ const loadRecipes = async () => {
   const rows = await sheetRowsByTitle('recipes')
   for(let row of rows){
     const [recipe, _] = await Recipe.findOrCreate({ where: { id: row.recipe_id, name: row.name } })
-    await RecipeContent.create({ recipe_id: recipe.id, ingredient_id: row.ingredient_id, ingredient_quantity: row.quantity })
+    await RecipeContent.create({ 
+      recipe_id: recipe.id,
+      ingredient_id: row.ingredient_id,
+      ingredient_quantity: row.quantity 
+    })
   }
+}
+
+
+const loadModifiers = async () => {
+  const rows = await sheetRowsByTitle('modifiers')
+  for(let row of rows){
+    if(row.modifier_id == 1){
+      const ingredient = await Ingredient.findOne({ where: { name: row.option } })
+      await ModifiableIngredient.create({ 
+        name: row.option,
+        price: row.price,
+        ingredient_id: ingredient.id
+      })
+    } else {
+      await Allergens.create({ name: row.option })
+    }
+  }
+}
+
+
+const loadMenuItems = async () => {
+  const rows = await sheetRowsByTitle('menus')
+  for(let row of rows){
+    const modifiable = row.modifiers == 1
+    const has_allergens = row.modifiers == 2
+    await MenuItem.create({ 
+      recipe_id: row.recipe_id,
+      location_id: row.location_id,
+      price: row.price,
+      modifiable,
+      has_allergens
+    })
+  }
+}
+
+
+const setLocationStock = async () => {
+
+  const nastyQuery = (locationId) => {
+    return `select * from ingredients i where id in (
+      select ingredient_id from recipe_contents rc where recipe_id in (
+        select id from recipes where recipe_id in (
+          select recipe_id from menu_items mi where location_id = ${locationId}
+        )
+      )
+    )`
+  }
+
+  const locations = await Location.findAll()
+  for(let location of locations){
+    const query = nastyQuery(location.id)
+    const [results, _] = await sequelize.query(query)
+
+    for(let result of results){
+      await IngredientStock.create({ ingredient_id: result.id, location_id: location.id })
+    }
+  }
+
 }
 
 

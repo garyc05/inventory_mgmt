@@ -10,10 +10,26 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       recipe_id: {
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       location_id: {
+        allowNull: false,
         type: Sequelize.INTEGER
+      },
+      price: {
+        allowNull: false,
+        type: Sequelize.DECIMAL
+      },
+      has_allergens: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      modifiable: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     })
   },
