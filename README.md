@@ -79,21 +79,21 @@ When Running the Data Import, there are two prompts for key values to allow acce
 The values for these will provided separate to this repository
 
 
-To run the application in an environment without bash, run the following command directly replacing the relevant values.  
+To run the application in an environment without a bash shell, run the following command directly replacing the relevant values.  
 ```LOCATION_ID=[VALUE] GOOGLE_SHEET_ID=[VALUE] GOOGLE_API_KEY=[VALUE] docker compose up --build```
 
 
 
 ## Basic verification
 A Postman collection has been added to the repo containing the various endpoints and pre-built request bodies.  
-The data used in the collection presumes the app has been run using **Location ID: 13** for the requests not to respond with errors. 
+The data used in the collection presumes the app has been started using **Location ID: 13** for the requests not to respond with errors. 
 
 An overview of the available endpoints
  
 **POST /delivery**  
-Updates the stock and inventory audit trail for the current location. 
-Only staff with the Chef or Back-of-house roles can make delivery requests. 
-The data property takes an arbitrary length array of ingredients and there quantities. 
+- Updates the stock and inventory audit trail for the current location. 
+- Only staff with the Chef or Back-of-house roles can make delivery requests. 
+- The data property takes an arbitrary length array of ingredients and there quantities. 
 Example Request Body:  
 ```
 {
@@ -107,12 +107,12 @@ Example Request Body:
 
 
 **POST /sell**  
-Selling an item reduces the current location stock, updates the inventory audit trail and creates a sale item. 
-Only staff with the Front-of-house role can make sell requests. 
-It is not possible to sell an item that the current location does not sell. 
-It is not possible to sell an item that the current location does not possess enough stock to fulfill. 
-If the combination of recipe and location allow for ingredient modification and a value is provided the sale price is adjusted accordingly. 
-Limitation of only handling a single menu item (identified by recipe_id) per each sell request. 
+- Selling an item reduces the current location stock, updates the inventory audit trail and creates a sale item
+- Only staff with the Front-of-house role can make sell requests
+- It is not possible to sell an item that the current location does not sell
+- It is not possible to sell an item that the current location does not possess enough stock to fulfill
+- If the combination of recipe and location allow for ingredient modification and a value is provided the sale price is adjusted accordingly
+- Limitation of only handling a single menu item (identified by recipe_id) per each sell request
 Example Request Body:  (modified_ingredient is optional)  
 ```
 {
@@ -126,12 +126,12 @@ Example Request Body:  (modified_ingredient is optional)
 
 
 **POST /stock/check**  
-Updates the stock levels for the current location
-No staff role requirements are applied to the stock/check route
-The units value passed in is assumed to be the current stock level after a manual count
-If the passed in units value is less than the current system stock level, the stock is adjusted accordingly and an inventory audit item created
-The case where stock check units may be hiher than system values is not handled
-The data property takes an arbitrary length array of ingredients and there quantities
+- Updates the stock levels for the current location
+- No staff role requirements are applied to the stock/check route
+- The units value passed in is assumed to be the current stock level after a manual count
+- If the passed in units value is less than the current system stock level, the stock is adjusted accordingly and an inventory audit item created
+- The case where stock check units may be hiher than system values is not handled
+- The data property takes an arbitrary length array of ingredients and there quantities
 Example Request Body:   
 ```
 {
@@ -146,18 +146,21 @@ Example Request Body:
 
 
 **GET /reports/inventory/audit?staff_id={}&start_date={}&end_Date={}**  
-Returns a list of all changes made to the stock levels of the current location during the selected date range.  
-Only staff with role Manager can make reports requests.  
-Takes the staff_id as a query param to enable a GET request. Would expect this value in the form of a session token or cookie etc in a fully implemented system.  
-Requires the start_date and end_date parameters. No attempts are made to parse and/or format these date strings, presumed to be in YYYY-MM-DD format  
+- Returns a list of all changes made to the stock levels of the current location during the selected date range
+- Only staff with role Manager are allowed make requests
+- Takes the staff_id as a query param to enable a GET request. Would expect this value in the form of a session token or cookie etc in a fully implemented system 
+- Requires the start_date and end_date parameters. No attempts are made to parse and/or format these date strings, presumed to be in YYYY-MM-DD format  
 
 
 **GET /reports/financials?staff_id={}&start_date={}&end_Date={}**  
-Returns a summary of costs and sales revenue for select date range  
+- Returns a summary of costs and sales revenue for select date range
+- Only staff with role Manager are allowed make requests
 
 
 **GET /reports/inventory/value?staff_id={}**  
-Returns the value of the currently held stock for current location  
+- Returns the value of the currently held stock for current location
+- Only staff with role Manager are allowed make requests
+
 
 
 ### DB Access
@@ -166,3 +169,13 @@ The PgAdmin interface is available @ http://localhost:5050/ when the application
 Login details are   
 Username: user@nory.com  
 Password: admin  
+
+
+
+## Final Notes
+- Recipes are furnished with a quantity of ingredient but no specific unit measurement value is specified. The only option was to consider the quantity as an entire unit regardless of measure. Unless I've misunderstood the data correlations, ingredients when applied to recipes in this fashion mean the cost price of a recipe can far exceed the sale price
+- The modifiers data is difficult to comprehend, so some base level assumptions were made. Modifiers labelled with ID 2 appear to not be modifiers but more recipe information items so I split the data into two entities, modifiable_ingredients and allergens. The modifiers with ID 1 are more clearly a recipe modification, however each is only identifiable by its option value which appears to match ingredient names. For adding recipe modifications I've used the name to match against a modifiable_ingredient as created at data load time, this allows me to add the modification cost to the sale price. As there is no specific unit or quantity provided, there is no stock check or inventory reduction carried out.
+- No current stock level is recorded in the spreadsheet, so the app can only presume a zero stock level. This means no sales can occur until stock levels are updated via delivery calls
+- No attempt is made to add security to the API, the app clearly calls for a login system that can generate and validate access tokens 
+- If this app is indeed limited in scope to only Inventory Management, some of the data in the spreadsheet is superfluous to those needs and should not be imported/stored (even though I did in fact import and store it). The most obvious being the bank details for staff member
+- Finally, I would personally recommend that Weird Salads continue to use their spreadsheet form of inventory management as this application is not fit for production 
