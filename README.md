@@ -42,7 +42,7 @@ being that docker must be installed. App developed on OSX and not run on any oth
 ## Priorities
 To achieve maximum output in the limited timeframe some functionalities were prioritized over others. Most notably the application lacks a user interface. 
 Clearly this does not meet the requirement of "Ready to use by the staff", however I don't currently spend much time on front-end development and I felt 
-it would take all the majority my time to put a usable interface in place
+it would take the majority my time just to put a usable interface in place
 
 
 ### Prioritized
